@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-// import Data from "../../Data/Data";
+
 
 const Meme = () => {
   const [meme, setmeme] = useState({
@@ -27,9 +27,6 @@ const Meme = () => {
   }, [])
 
 
-
-  // console.log(allmeme)
-  // const [allmemeImages, setAllmemeImages] = useState(Data);
 
   const handleClick = () => {
     const memesArray = allmeme;
