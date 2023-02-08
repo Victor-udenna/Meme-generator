@@ -1,40 +1,82 @@
-import React, { useState } from 'react'
-import Data from '../../Data/Data'
+import React, { useState, useEffect } from "react";
+// import Data from "../../Data/Data";
+
+const Meme = () => {
+  const [meme, setmeme] = useState({
+    topText: "",
+    bottomText: "",
+    randomImage: "https://i.imgflip.com/1g8my4.jpg",
+  });
 
 
 
- const Meme = () => {
+  function handleChange (event) {
+    const {name, value} = event.target
+    setmeme(prevmeme => ({
+      ...prevmeme,
+      [name] : value
+    }))
+  }
 
-  const [memeImage, setmemeImage] = useState("https://i.imgflip.com/1g8my4.jpg")
+  const [allmeme, setAllmeme] = useState([])
+
+  useEffect( ()=>{
+    fetch("https://api.imgflip.com/get_memes")
+    .then(res=> res.json())
+    .then(data=> setAllmeme(data.data.memes))
+  }, [])
 
 
-const handleClick = ()=>{
-    const memesArray = Data.data.memes;
+
+  // console.log(allmeme)
+  // const [allmemeImages, setAllmemeImages] = useState(Data);
+
+  const handleClick = () => {
+    const memesArray = allmeme;
     const randomNumber = Math.floor(Math.random() * memesArray.length);
-    setmemeImage(memesArray[randomNumber].url)
-}
-
-
-
+    const url = memesArray[randomNumber].url;
+    setmeme((prevmeme) => ({
+      ...prevmeme,
+      randomImage: url,
+    }));
+  };
 
   return (
-   <main className='bg-green-400 p-10'>
-    <div className='grid grid-cols-2 gap-4'>
-        <input type="text"
-        placeholder='top-text'
-        className='rounded-md p-3'/>
-        <input type="text"
-        placeholder='bottom-text'
-        className='rounded-md p-3'/>
-        <button className='col-start-1 col-end-4 bg-red-500 btn rounded-md p-5 pionter' onClick={handleClick}>Get a new meme image  😀</button>
-    </div>
+    <main className="h-screen bg-green-400 p-10">
+      <div className="grid grid-cols-2 gap-4">
+        <input type="text" placeholder="top-text" className="rounded-md p-3"
+        name="topText" 
+        value={meme.topText}
+        onChange={handleChange}
+        />
 
-    <div>
-      <img className='w-[300px] h-[300px]' src={memeImage}/>
-    </div>
-   </main>
-  )
-}
+        <input
+          type="text"
+          placeholder="bottom-text"
+          className="rounded-md p-3"
+          name="bottomText"
+          value={meme.bottomText}
+          onChange={handleChange}
+        />
+        <button
+          className="col-start-1 col-end-4 bg-red-500 btn rounded-md p-5 pionter"
+          onClick={handleClick}
+        >
+          Get a new meme image 😀
+        </button>
+      </div>
 
+      <div className="text-center meme py-5">
+        <img
+          className=" meme-image w-[300px] h-[300px] mx-auto"
+          alt="meme_img"
+          src={meme.randomImage}
+        />
+        <h2 className="meme--text top">{meme.topText}</h2>
+        <h2 className="meme--text bottom">{meme.bottomText}</h2>
+      </div>
+    </main>
+  );
+};
 
 export default Meme;
